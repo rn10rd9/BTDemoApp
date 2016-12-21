@@ -14,6 +14,9 @@
 		41F83FA31E08BF29008ADBE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41F83FA11E08BF29008ADBE7 /* LaunchScreen.storyboard */; };
 		41F83FAE1E08BF2A008ADBE7 /* BTDEMOAPPTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F83FAD1E08BF2A008ADBE7 /* BTDEMOAPPTests.swift */; };
 		41F83FB91E08BF2A008ADBE7 /* BTDEMOAPPUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F83FB81E08BF2A008ADBE7 /* BTDEMOAPPUITests.swift */; };
+		41F840091E0A2140008ADBE7 /* BlunoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F840081E0A2140008ADBE7 /* BlunoTableViewController.swift */; };
+		41F8400B1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F8400A1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift */; };
+		41F8400D1E0AF725008ADBE7 /* BTServiceDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F8400C1E0AF725008ADBE7 /* BTServiceDemoApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +50,9 @@
 		41F83FB41E08BF2A008ADBE7 /* BTDEMOAPPUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BTDEMOAPPUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F83FB81E08BF2A008ADBE7 /* BTDEMOAPPUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BTDEMOAPPUITests.swift; sourceTree = "<group>"; };
 		41F83FBA1E08BF2A008ADBE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		41F840081E0A2140008ADBE7 /* BlunoTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlunoTableViewController.swift; sourceTree = "<group>"; };
+		41F8400A1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BTDiscoveryViewController.swift; sourceTree = "<group>"; };
+		41F8400C1E0AF725008ADBE7 /* BTServiceDemoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BTServiceDemoApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,9 @@
 				41F83F981E08BF29008ADBE7 /* AppDelegate.swift */,
 				41F83F9A1E08BF29008ADBE7 /* ViewController.swift */,
 				41F83F9C1E08BF29008ADBE7 /* Main.storyboard */,
+				41F840081E0A2140008ADBE7 /* BlunoTableViewController.swift */,
+				41F8400A1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift */,
+				41F8400C1E0AF725008ADBE7 /* BTServiceDemoApp.swift */,
 				41F83F9F1E08BF29008ADBE7 /* Assets.xcassets */,
 				41F83FA11E08BF29008ADBE7 /* LaunchScreen.storyboard */,
 				41F83FA41E08BF29008ADBE7 /* Info.plist */,
@@ -262,8 +271,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41F840091E0A2140008ADBE7 /* BlunoTableViewController.swift in Sources */,
+				41F8400D1E0AF725008ADBE7 /* BTServiceDemoApp.swift in Sources */,
 				41F83F9B1E08BF29008ADBE7 /* ViewController.swift in Sources */,
 				41F83F991E08BF29008ADBE7 /* AppDelegate.swift in Sources */,
+				41F8400B1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
