@@ -14,7 +14,8 @@ let btDiscoverySharedInstance = BTDiscoveryViewController()
 
 class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     
-    @IBOutlet weak var Output: UIScrollView!
+    
+    @IBOutlet weak var output: UILabel!
     
     fileprivate var centralManager: CBCentralManager?
     fileprivate var peripheralBLE: CBPeripheral?
@@ -38,6 +39,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        output.text = "Waiting for device..."
     }
 
         // Do any additional setup after loading the view.
@@ -50,7 +52,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     
     func timeoutPeripheralConnectionAttempt()
     {
-        print("Peripheral connection attempt timed out. Make sure the Bluno board is powered ON")
+        output.text = "Peripheral connection attempt timed out. Make sure the Bluno board is powered ON"
         if let connectedPeripheral = connectedPeripheral
         {
             centralManager?.cancelPeripheralConnection(connectedPeripheral)
@@ -63,7 +65,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         if let central = centralManager
         {
             central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
-            NSLog("Scanning...")
+            output.text = "Scanning..."
             scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
         }
     }
@@ -108,7 +110,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             
             // Connect to peripheral
             central.connect(peripheral, options: nil)
-            NSLog("Device [%@] is connected...",BLEModuleServiceUUID )
+            output.text = "Bluno Board is now connected"
             
         }
     }
@@ -170,6 +172,11 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             
         }
     }
+    
+    @IBAction func BTScan() {
+        btDiscoverySharedInstance
+    }
+    
     
     
 }
