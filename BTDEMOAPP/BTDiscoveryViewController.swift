@@ -18,6 +18,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     @IBOutlet weak var output: UILabel!
     
     fileprivate var centralManager: CBCentralManager?
+    fileprivate var isBluetoothEnabled = false
     fileprivate var peripheralBLE: CBPeripheral?
     fileprivate var scanTimer: Timer?
     fileprivate var connectionAttemptTimer: Timer?
@@ -40,6 +41,18 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     {
         super.viewDidLoad()
         output.text = "Waiting for device..."
+        //btDiscoverySharedInstance
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        if isBluetoothEnabled
+        {
+            if let peripheral = connectedPeripheral
+            {
+                centralManager?.cancelPeripheralConnection(peripheral)
+            }
+        }
     }
 
         // Do any additional setup after loading the view.
@@ -64,9 +77,17 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     {
         if let central = centralManager
         {
+            if isBluetoothEnabled == true
+            {
             central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
             output.text = "Scanning..."
             scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
+            }
+            
+            else
+            {
+            output.text = "Device already connected"
+            }
         }
     }
     
@@ -148,23 +169,28 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch (central.state) {
         case .poweredOff:
+            isBluetoothEnabled = false
             NSLog("BLE PoweredOff")
             self.clearDevices()
             
         case .unauthorized:
             // Indicate to user that the iOS device does not support BLE.
             NSLog("BLE Unauthorized")
+            isBluetoothEnabled = false
             break
             
         case .unknown:
             // Wait for another event
+            isBluetoothEnabled = false
             break
             
         case .poweredOn:
             NSLog("BLE poweredOn")
             self.startScanning()
+            isBluetoothEnabled = true
             
         case .resetting:
+            isBluetoothEnabled = false
             self.clearDevices()
             
         case .unsupported:
@@ -173,9 +199,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         }
     }
     
-    @IBAction func BTScan() {
-        btDiscoverySharedInstance
-    }
+ 
     
     
     
