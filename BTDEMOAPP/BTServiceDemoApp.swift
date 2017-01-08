@@ -66,7 +66,7 @@ class BTModuleService: NSObject, CBPeripheralDelegate {
         for service in peripheral.services! {
             if service.uuid == BLEModuleServiceUUID {
                 peripheral.discoverCharacteristics(uuidsForBTService, for: service)
-                NSLog("Discovered characteristic: %@",service);
+                NSLog("Discovered service: %@",service);
             }
         }
     }
@@ -89,19 +89,47 @@ class BTModuleService: NSObject, CBPeripheralDelegate {
                     
                     // Send notification that Bluetooth is connected and all required characteristics are discovered
                     self.sendBTServiceNotificationWithIsBluetoothConnected(true)
-                    NSLog("Discovered characteristic!!");
+                    NSLog("Discovered characteristic: %@", characteristic)
                     
                 }
             }
         }
     }
     
+    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?){
+        
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?){
+        
+        var size:UInt8 = 0;
+        //var data: String
+        
+        if characteristic.uuid == kBlunoDataCharacteristic {
+            characteristic.value!.copyBytes(to: &size, count: MemoryLayout<UInt32>.size)
+               // NSLog(NSString(format: "%", size) as String)
+            var value = String(data: characteristic.value!, encoding: String.Encoding.utf8)
+            print("Value \(value)")
+        
+        }
+        
+    }
+
+    
+
     // Mark: - Private
     
-    func writePosition(_ position: UInt8) {
+    func readData(_ characteristic: CBCharacteristic, error: Error?)
+    {
         
-        /******** (1) CODE TO BE ADDED *******/
-        
+        /******** (1) CODE TO BE ADDED *******
+        let data = characteristic.value!;
+        // Display the heart rate value to the UI if no error occurred
+        if((characteristic.value != nil) || !(error != nil) ) {   // 4
+
+            NSLog("VALUE RECEIVED IS %@", data)
+        }
+        */
     }
     
     func sendBTServiceNotificationWithIsBluetoothConnected(_ isBluetoothConnected: Bool) {

@@ -19,6 +19,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     
     fileprivate var centralManager: CBCentralManager?
     fileprivate var isBluetoothEnabled = false
+    fileprivate var isConnected = false
     fileprivate var peripheralBLE: CBPeripheral?
     fileprivate var scanTimer: Timer?
     fileprivate var connectionAttemptTimer: Timer?
@@ -51,6 +52,10 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             if let peripheral = connectedPeripheral
             {
                 centralManager?.cancelPeripheralConnection(peripheral)
+                isConnected = true
+                output.text = "Connection cancelled"
+                
+                
             }
         }
     }
@@ -65,7 +70,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     
     func timeoutPeripheralConnectionAttempt()
     {
-        output.text = "Peripheral connection attempt timed out. Make sure the Bluno board is powered ON"
+        output.text = "Peripheral connection attempt timed out.\nMake sure the Bluno board is powered ON"
         if let connectedPeripheral = connectedPeripheral
         {
             centralManager?.cancelPeripheralConnection(connectedPeripheral)
@@ -75,19 +80,22 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     
     func startScanning()
     {
+        
         if let central = centralManager
         {
-            if isBluetoothEnabled == true
+            if isConnected
             {
-            central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
-            output.text = "Scanning..."
-            scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
+
+                //isConnected = true
+               output.text = "Device is already connected"
             }
-            
-            else
-            {
-            output.text = "Device already connected"
+            else{
+                central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
+                output.text = "Scanning..."
+                scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
+                //output.text = "Device is already connected"
             }
+
         }
     }
     
@@ -141,6 +149,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         // Create new service class
         if (peripheral == self.peripheralBLE) {
             self.bleService = BTModuleService(initWithPeripheral: peripheral)
+            isConnected = true
         }
         
          central.stopScan()
@@ -153,6 +162,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         if (peripheral == self.peripheralBLE) {
             self.bleService = nil;
             self.peripheralBLE = nil;
+            isConnected = true
         }
         
         // Start scanning for new devices
@@ -198,11 +208,6 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             
         }
     }
-    
- 
-    
-    
-    
 }
 
 
