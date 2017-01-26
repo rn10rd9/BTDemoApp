@@ -20,6 +20,8 @@ class BTModuleService: NSObject, CBPeripheralDelegate {
     var peripheral: CBPeripheral?
     var positionCharacteristic: CBCharacteristic?
     
+    
+    
     init(initWithPeripheral peripheral: CBPeripheral) {
         super.init()
         
@@ -102,34 +104,31 @@ class BTModuleService: NSObject, CBPeripheralDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?){
         
-        var size:UInt8 = 0;
         //var data: String
         
         if characteristic.uuid == kBlunoDataCharacteristic {
-            characteristic.value!.copyBytes(to: &size, count: MemoryLayout<UInt32>.size)
-               // NSLog(NSString(format: "%", size) as String)
-            var value = String(data: characteristic.value!, encoding: String.Encoding.utf8)
+            let value = String(data: characteristic.value!, encoding: String.Encoding.utf8)
             print("Value \(value)")
-        
+            
         }
         
     }
-
     
-
+    
+    
     // Mark: - Private
     
     func readData(_ characteristic: CBCharacteristic, error: Error?)
     {
         
         /******** (1) CODE TO BE ADDED *******
-        let data = characteristic.value!;
-        // Display the heart rate value to the UI if no error occurred
-        if((characteristic.value != nil) || !(error != nil) ) {   // 4
-
-            NSLog("VALUE RECEIVED IS %@", data)
-        }
-        */
+         let data = characteristic.value!;
+         // Display the heart rate value to the UI if no error occurred
+         if((characteristic.value != nil) || !(error != nil) ) {   // 4
+         
+         NSLog("VALUE RECEIVED IS %@", data)
+         }
+         */
     }
     
     func sendBTServiceNotificationWithIsBluetoothConnected(_ isBluetoothConnected: Bool) {

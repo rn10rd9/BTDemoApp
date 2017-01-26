@@ -15,6 +15,7 @@ let btDiscoverySharedInstance = BTDiscoveryViewController()
 class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     
     
+    
     @IBOutlet weak var output: UILabel!
     
     fileprivate var centralManager: CBCentralManager?
@@ -24,7 +25,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     fileprivate var scanTimer: Timer?
     fileprivate var connectionAttemptTimer: Timer?
     fileprivate var connectedPeripheral: CBPeripheral?
-
+    
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -59,10 +60,10 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             }
         }
     }
-
-        // Do any additional setup after loading the view.
     
-
+    // Do any additional setup after loading the view.
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -85,9 +86,9 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         {
             if isConnected
             {
-
+                
                 //isConnected = true
-               output.text = "Device is already connected"
+                output.text = "Device is already connected"
             }
             else{
                 central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
@@ -95,19 +96,19 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
                 scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
                 //output.text = "Device is already connected"
             }
-
+            
         }
     }
     
-   func stopScanning()
+    func stopScanning()
     {
         print("Stopped scanning.")
         //print("Found \(visiblePeripherals.count) peripherals.")
         centralManager?.stopScan()
-       // refreshControl?.endRefreshing()
+        // refreshControl?.endRefreshing()
         scanTimer?.invalidate()
     }
- 
+    
     var bleService: BTModuleService?
         {
         didSet
@@ -118,7 +119,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             }
         }
     }
-
+    
     // MARK: - CBCentralManagerDelegate
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -152,8 +153,8 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             isConnected = true
         }
         
-         central.stopScan()
-
+        central.stopScan()
+        
     }
     
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
@@ -211,6 +212,6 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
 }
 
 
-    
+
 
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4115E6DA1E37BD610068C139 /* BTModuleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4115E6D91E37BD610068C139 /* BTModuleViewController.swift */; };
 		41F83F991E08BF29008ADBE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F83F981E08BF29008ADBE7 /* AppDelegate.swift */; };
 		41F83F9B1E08BF29008ADBE7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F83F9A1E08BF29008ADBE7 /* ViewController.swift */; };
 		41F83F9E1E08BF29008ADBE7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 41F83F9C1E08BF29008ADBE7 /* Main.storyboard */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4115E6D91E37BD610068C139 /* BTModuleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BTModuleViewController.swift; sourceTree = "<group>"; };
 		41F83F951E08BF29008ADBE7 /* BTDEMOAPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BTDEMOAPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41F83F981E08BF29008ADBE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		41F83F9A1E08BF29008ADBE7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				41F83F9C1E08BF29008ADBE7 /* Main.storyboard */,
 				41F840081E0A2140008ADBE7 /* BlunoTableViewController.swift */,
 				41F8400A1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift */,
+				4115E6D91E37BD610068C139 /* BTModuleViewController.swift */,
 				41F8400C1E0AF725008ADBE7 /* BTServiceDemoApp.swift */,
 				41F83F9F1E08BF29008ADBE7 /* Assets.xcassets */,
 				41F83FA11E08BF29008ADBE7 /* LaunchScreen.storyboard */,
@@ -273,6 +276,7 @@
 			files = (
 				41F840091E0A2140008ADBE7 /* BlunoTableViewController.swift in Sources */,
 				41F8400D1E0AF725008ADBE7 /* BTServiceDemoApp.swift in Sources */,
+				4115E6DA1E37BD610068C139 /* BTModuleViewController.swift in Sources */,
 				41F83F9B1E08BF29008ADBE7 /* ViewController.swift in Sources */,
 				41F83F991E08BF29008ADBE7 /* AppDelegate.swift in Sources */,
 				41F8400B1E0AEED2008ADBE7 /* BTDiscoveryViewController.swift in Sources */,
@@ -524,6 +528,7 @@
 				41F83FBF1E08BF2A008ADBE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		41F83FC01E08BF2A008ADBE7 /* Build configuration list for PBXNativeTarget "BTDEMOAPPTests" */ = {
 			isa = XCConfigurationList;
@@ -532,6 +537,7 @@
 				41F83FC21E08BF2A008ADBE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		41F83FC31E08BF2A008ADBE7 /* Build configuration list for PBXNativeTarget "BTDEMOAPPUITests" */ = {
 			isa = XCConfigurationList;
@@ -540,6 +546,7 @@
 				41F83FC51E08BF2A008ADBE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
