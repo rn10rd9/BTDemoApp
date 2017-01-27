@@ -10,9 +10,9 @@ import UIKit
 import Foundation
 import CoreBluetooth
 
-let btDiscoverySharedInstance = BTDiscoveryViewController()
 
-class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
+let btDiscoverySharedInstance = BTDiscovery()
+class BTDiscovery:  NSObject,  CBCentralManagerDelegate  {
     
     
     
@@ -26,53 +26,22 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
     fileprivate var connectionAttemptTimer: Timer?
     fileprivate var connectedPeripheral: CBPeripheral?
     
+    var peripherals: NSMutableArray?
     
-    required init?(coder aDecoder: NSCoder)
-    {
-        super.init(coder: aDecoder)
-        centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
+    
+    override init() {
+        super.init()
+        
+       // let centralQueue = DispatchQueue(label: "com.raywenderlich", attributes: [])
+        centralManager = CBCentralManager(delegate: self, queue: nil)
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
-    {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
-    }
     
-    override func viewDidLoad()
-    {
-        super.viewDidLoad()
-        output.text = "Waiting for device..."
-        //btDiscoverySharedInstance
-    }
-    
-    override func viewDidAppear(_ animated: Bool)
-    {
-        if isBluetoothEnabled
-        {
-            if let peripheral = connectedPeripheral
-            {
-                centralManager?.cancelPeripheralConnection(peripheral)
-                isConnected = true
-                output.text = "Connection cancelled"
-                
-                
-            }
-        }
-    }
-    
-    // Do any additional setup after loading the view.
-    
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func timeoutPeripheralConnectionAttempt()
     {
-        output.text = "Peripheral connection attempt timed out.\nMake sure the Bluno board is powered ON"
-        if let connectedPeripheral = connectedPeripheral
+        print("Make sure the Bluno board is powered ON")
+        if let connectedPeripheral = self.connectedPeripheral
         {
             centralManager?.cancelPeripheralConnection(connectedPeripheral)
         }
@@ -84,18 +53,11 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         
         if let central = centralManager
         {
-            if isConnected
-            {
-                
-                //isConnected = true
-                output.text = "Device is already connected"
-            }
-            else{
+
                 central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
-                output.text = "Scanning..."
-                scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
-                //output.text = "Device is already connected"
-            }
+                print("Scanning...")
+                scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscovery.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
+
             
         }
     }
@@ -120,6 +82,12 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         }
     }
     
+    func getPeripheralName()->CBPeripheral
+    {
+        let peripheral: CBPeripheral = self.peripheralBLE!
+        return peripheral
+    }
+    
     // MARK: - CBCentralManagerDelegate
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -140,7 +108,7 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
             
             // Connect to peripheral
             central.connect(peripheral, options: nil)
-            output.text = "Bluno Board is now connected"
+            print("Bluno Board is now connected")
             
         }
     }
@@ -163,11 +131,12 @@ class BTDiscoveryViewController: UIViewController, CBCentralManagerDelegate  {
         if (peripheral == self.peripheralBLE) {
             self.bleService = nil;
             self.peripheralBLE = nil;
-            isConnected = true
+            //print("Our device is disconnected")
         }
         
         // Start scanning for new devices
         self.startScanning()
+        print("Bluno Board is disconnected")
     }
     
     // MARK: - Private

@@ -10,7 +10,7 @@ import UIKit
 import Foundation
 import CoreBluetooth
 
-class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableViewDelegate, CBCentralManagerDelegate, CBPeripheralDelegate  {
+/*class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableViewDelegate, CBCentralManagerDelegate, CBPeripheralDelegate  {
     
     //Variable intializations
     
@@ -53,8 +53,8 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
             outputLabel.text = "Waiting for device..."
             centralManager = CBCentralManager(delegate: self, queue: nil)
             //peripherals = NSMutableArray()
-            let scanButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.startScanning))
-            self.navigationItem.rightBarButtonItem = scanButton
+           /* let scanButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.startScanning))
+            self.navigationItem.rightBarButtonItem = scanButton*/
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -67,7 +67,7 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         return 5
     }
     
-    private func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         //We set the cell title according to the peripheral's name
         let peripheral: CBPeripheral = self.peripheral!
@@ -80,13 +80,13 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         centralManager?.connect(peripheral, options: nil)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    /*func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         //We set the cell title according to the peripheral's name
         //var peripheral: CBPeripheral? = peripheralBLE[indexPath.row]
         cell?.textLabel?.text = peripheral?.name
         return cell!
-    }
+    }*/
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -109,22 +109,13 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     func startScanning()
     {
         
-        if let central = centralManager
+      if let central = centralManager
         {
-            if isConnected
-            {
-                
-                //isConnected = true
-                outputLabel.text = "Device is already connected"
-            }
-            else{
                 central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
                 outputLabel.text = "Scanning..."
-                scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscoveryViewController.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
+                scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscovery.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
                 //output.text = "Device is already connected"
-            }
-            
-        }
+
     }
     
     func stopScanning()
@@ -242,12 +233,16 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
             break
             
         }
-    }
+    }*/
 
     
     // MARK: CBPeripheral Delegate
     
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+  /*  func startDiscoveringServices() {
+        self.peripheral?.discoverServices([BLEModuleServiceUUID])
+    }
+    
+   func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         let uuidsForBTService: [CBUUID] = [kBlunoDataCharacteristic ]
         
        /* if (peripheral != self.peripheral) {
@@ -273,10 +268,11 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-       /* if (peripheral != self.peripheral) {
+        if (peripheral != self.peripheral) {
             // Wrong Peripheral
+            print("Wrong peripehal")
             return
-        }*/
+        }
         
         if (error != nil) {
             return
@@ -313,4 +309,4 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         
     }
     
-}
+}*/
