@@ -92,6 +92,7 @@ class BTModuleService: NSObject, CBPeripheralDelegate {
                     // Send notification that Bluetooth is connected and all required characteristics are discovered
                     self.sendBTServiceNotificationWithIsBluetoothConnected(true)
                     NSLog("Discovered characteristic: %@", characteristic)
+                    print("HERE")
                     
                 }
             }
