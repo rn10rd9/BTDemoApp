@@ -10,11 +10,12 @@ import UIKit
 import Foundation
 import CoreBluetooth
 
-/*class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableViewDelegate, CBCentralManagerDelegate, CBPeripheralDelegate  {
+class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableViewDelegate, CBCentralManagerDelegate, CBPeripheralDelegate  {
     
     //Variable intializations
     
-    //@IBOutlet weak var output: UILabel!
+    @IBOutlet var tableView: UITableView!
+    
     @IBOutlet weak var outputLabel: UILabel!
     
     fileprivate var centralManager: CBCentralManager?
@@ -30,12 +31,12 @@ import CoreBluetooth
     let BLEModuleServiceUUID = CBUUID(string: "0000dfb0-0000-1000-8000-00805f9b34fb")
     let kBlunoDataCharacteristic  = CBUUID(string: "0000dfb1-0000-1000-8000-00805f9b34fb")
     
-   /* required init?(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
         self.peripheralBLE?.delegate = self
-    
+        
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
@@ -43,60 +44,58 @@ import CoreBluetooth
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
     }
-    */
- 
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Do any additional setup after loading the view, typically from a nib.
+        //init CBCentralManager and its delegate
+        outputLabel.text = "Waiting for device..."
+        centralManager = CBCentralManager(delegate: self, queue: nil)
+        startScanning()
+        tableView.delegate = self
+        tableView.dataSource = self
 
-            // Do any additional setup after loading the view, typically from a nib.
-            //init CBCentralManager and its delegate
-            outputLabel.text = "Waiting for device..."
-            centralManager = CBCentralManager(delegate: self, queue: nil)
-            //peripherals = NSMutableArray()
-           /* let scanButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.startScanning))
-            self.navigationItem.rightBarButtonItem = scanButton*/
+        
+    }
+
+    
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 3
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 5
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         //We set the cell title according to the peripheral's name
-        let peripheral: CBPeripheral = self.peripheral!
-        cell.textLabel?.text = peripheral.name
+        //let peripheral: CBPeripheral = self.peripheral!
+        cell.textLabel?.text = "hello"
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let peripheral: CBPeripheral = self.peripheral!
         centralManager?.connect(peripheral, options: nil)
+        // Connect to peripheral
+        outputLabel.text = "Bluno Board is now connected"
     }
     
-    /*func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell? = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        //We set the cell title according to the peripheral's name
-        //var peripheral: CBPeripheral? = peripheralBLE[indexPath.row]
-        cell?.textLabel?.text = peripheral?.name
-        return cell!
-    }*/
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-
     func timeoutPeripheralConnectionAttempt()
     {
-        outputLabel.text = "Connection attempt timed out..."
+        //outputLabel.text = "Connection attempt timed out..."
         if let connectedPeripheral = connectedPeripheral
         {
             centralManager?.cancelPeripheralConnection(connectedPeripheral)
@@ -109,13 +108,14 @@ import CoreBluetooth
     func startScanning()
     {
         
-      if let central = centralManager
+        if let central = centralManager
         {
-                central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
-                outputLabel.text = "Scanning..."
-                scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscovery.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
-                //output.text = "Device is already connected"
-
+            central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
+            outputLabel.text = "Scanning..."
+            scanTimer = Timer.scheduledTimer(timeInterval: 40, target: self, selector: #selector(BTDiscovery.timeoutPeripheralConnectionAttempt), userInfo: nil, repeats: false)
+        }
+        //output.text = "Device is already connected"
+        
     }
     
     func stopScanning()
@@ -157,13 +157,11 @@ import CoreBluetooth
             self.bleService = nil
             
             /*if !peripherals.contains(peripheral) {
-                peripherals.append(peripheral)
-            }
-            self.tableView.reloadData()*/
-            
+             peripherals.append(peripheral)
+             }
+             self.tableView.reloadData()*/
             // Connect to peripheral
-            central.connect(peripheral, options: nil)
-            outputLabel.text = "Bluno Board is now connected"
+            outputLabel.text = "Found " + peripheral.name! + " device"
             
         }
     }
@@ -174,7 +172,7 @@ import CoreBluetooth
         if (peripheral == self.peripheralBLE) {
             peripheral.delegate = self
             peripheral.discoverServices(nil)
-
+            
         }
         
         central.stopScan()
@@ -185,10 +183,10 @@ import CoreBluetooth
         
         // See if it was our peripheral that disconnected
         //if (peripheral == self.peripheralBLE) {
-            //self.bleService = nil;
-            peripheral.delegate = nil
-            print("Bluno Board is disconnected")
-            outputLabel.text = "Bluno Board is disconnected"
+        //self.bleService = nil;
+        peripheral.delegate = nil
+        //print("Bluno Board is disconnected")
+        outputLabel.text = "Bluno Board is disconnected"
         //}
         
         // Start scanning for new devices
@@ -233,80 +231,5 @@ import CoreBluetooth
             break
             
         }
-    }*/
-
-    
-    // MARK: CBPeripheral Delegate
-    
-  /*  func startDiscoveringServices() {
-        self.peripheral?.discoverServices([BLEModuleServiceUUID])
     }
-    
-   func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
-        let uuidsForBTService: [CBUUID] = [kBlunoDataCharacteristic ]
-        
-       /* if (peripheral != self.peripheral) {
-            // Wrong Peripheral
-            return
-        }*/
-        
-        if (error != nil) {
-            return
-        }
-        
-        if ((peripheral.services == nil) || (peripheral.services!.count == 0)) {
-            // No Services
-            return
-        }
-        
-        for service in peripheral.services! {
-            if service.uuid == BLEModuleServiceUUID {
-                peripheral.discoverCharacteristics(uuidsForBTService, for: service)
-                NSLog("Discovered service: %@",service);
-            }
-        }
-    }
-    
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        if (peripheral != self.peripheral) {
-            // Wrong Peripheral
-            print("Wrong peripehal")
-            return
-        }
-        
-        if (error != nil) {
-            return
-        }
-        
-        if let characteristics = service.characteristics {
-            for characteristic in characteristics {
-                if characteristic.uuid == kBlunoDataCharacteristic {
-                    // self.positionCharacteristic = (characteristic)
-                    peripheral.setNotifyValue(true, for: characteristic)
-                    
-                    // Send notification that Bluetooth is connected and all required characteristics are discovered
-                    //self.sendBTServiceNotificationWithIsBluetoothConnected(true)
-                    NSLog("Discovered characteristic: %@", characteristic)
-                    
-                }
-            }
-        }
-    }
-    
-    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?){
-        
-    }
-    
-    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?){
-        
-        //var data: String
-        
-        if characteristic.uuid == kBlunoDataCharacteristic {
-            let value = String(data: characteristic.value!, encoding: String.Encoding.utf8)
-            print("Value \(value)")
-            
-        }
-        
-    }
-    
-}*/
+}

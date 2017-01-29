@@ -10,9 +10,9 @@ import UIKit
 
 class ConnectionViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @IBAction func scanBTN(_ sender: Any) {
+  /*  @IBAction func scanBTN(_ sender: Any) {
         btDiscoverySharedInstance
-    }
+    }*/
     override func viewDidLoad() {
         super.viewDidLoad()
 
