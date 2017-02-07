@@ -27,6 +27,7 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     fileprivate var peripheral: CBPeripheral?
     fileprivate var peripherals: [CBPeripheral?] = []
     var strArr = [String]()
+    var index = 0
     
     // UUID and characteristics
     let BLEModuleServiceUUID = CBUUID(string: "0000dfb0-0000-1000-8000-00805f9b34fb")
@@ -272,34 +273,25 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?){
         
-        //var data: String
+         //var data: String
        // var result: Float = 0.0
         
         if characteristic.uuid == kBlunoDataCharacteristic {
             let value = String(data: characteristic.value!, encoding: String.Encoding.utf8)
-            print("Value \(value)")
-            for index in 0...4{
-                strArr.append(value!)
-                
-                //print("string array")
-                //index += 1
-                
-            }
+            //print("Value \(value)")
+            storeStringData(value!)
+            
             
             
         
             
             
-            var index = 0
-            for val in strArr{
-               print(strArr[index])
-                index+=1
-        
-            }
+            
+            
             //let num = NumberFormatter().number(from: value!)?.floatValue
            //result = (num as? Float)!
            //print("Value \(num)")
-            
+            index+=1
         }
         
     }
@@ -309,25 +301,52 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     // Mark: - Private
     
     func storeStringData(_ data: String) ->[String]{
-        var strArr = [String]()
-        
-        if (data != "\r\n"){
-            strArr.append(data)
-            
-            //print("string array is  \(strArr[index])")
-            //index += 1
-            
+        //var strArr = [String]()
+        if (index < 4){
+            print("index is \(index)")
+            if (data != "\r\n"){
+                strArr.append(data)
+                
+                
+            }
         }
+        else{
+            convertToFloat(strArr)
+        }
+        
+       
         
         return strArr
     }
     
-    func convertToFloat(){
+    func convertToFloat(_ array: [String]) ->[Float]{
+        //var newArr = [String]()
+        var floatArr = [Float]()
+        var arrIndex = 0
+        //var number: NSNumber
+        //var numberFloatValue = -555.555
         
+        //let numberFormatter = NumberFormatter()
+        //let numberFloatValue = number?.floatValue
+        
+        for string in array {
+            let myFloat = (string as NSString).floatValue
+            //numberFloatValue = Double(number.floatValue)
+            
+            floatArr.insert(myFloat, at: arrIndex)
+            
+            print("float[\(arrIndex)] is \(floatArr[arrIndex])")
+            arrIndex += 1
+            
+        }
+        resetArray()
+        
+        return floatArr
     }
   
-    func isNumeric(a: String) -> Bool {
-        return Float(a) != nil
+    func resetArray(){
+        self.strArr = []
+        index = 0
     }
     
     @IBAction func ScanButton(_ sender: UIButton) {
