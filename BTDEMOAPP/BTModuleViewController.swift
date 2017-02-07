@@ -25,25 +25,14 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     fileprivate var connectionAttemptTimer: Timer?
     fileprivate var connectedPeripheral: CBPeripheral?
     fileprivate var peripheral: CBPeripheral?
+    fileprivate var peripherals: [CBPeripheral?] = []
+    var strArr = [String]()
     
     // UUID and characteristics
     let BLEModuleServiceUUID = CBUUID(string: "0000dfb0-0000-1000-8000-00805f9b34fb")
     let kBlunoDataCharacteristic  = CBUUID(string: "0000dfb1-0000-1000-8000-00805f9b34fb")
     
-   /* required init?(coder aDecoder: NSCoder)
-    {
-        super.init(coder: aDecoder)
-        centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
-        self.peripheralBLE?.delegate = self
-        
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?)
-    {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        centralManager = CBCentralManager(delegate: self, queue: nil, options: [CBCentralManagerOptionShowPowerAlertKey: true])
-    }
-    */
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,20 +64,20 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 1
+        return peripherals.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         //We set the cell title according to the peripheral's name
-        //let peripheral: CBPeripheral = self.peripheral!
-        cell.textLabel!.text = "Hello"
+        let peripheral: CBPeripheral = self.peripherals[indexPath.row]!
+        cell.textLabel?.text = peripheral.name
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-      let peripheral: CBPeripheral = self.peripheral!
-        centralManager!.connect(peripheral, options: nil)
+      let peripheral: CBPeripheral = self.peripherals[indexPath.row]!
+        centralManager?.connect(peripheral, options: nil)
         // Connect to peripheral
         outputLabel.text = "Bluno Board is now connected"
     }
@@ -109,11 +98,11 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     
     func startScanning()
     {
-        
+        outputLabel.text = "Scanning..."
         if let central = centralManager
         {
             central.scanForPeripherals(withServices: [BLEModuleServiceUUID], options: nil)
-            outputLabel.text = "Scanning..."
+            
             scanTimer = Timer.scheduledTimer(timeInterval: 20, target: self, selector: #selector(BTModuleViewController.timeout), userInfo: nil, repeats: false)
         }
         //output.text = "Device is already connected"
@@ -127,20 +116,9 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         centralManager?.stopScan()
         //refreshControl?.endRefreshing()
         scanTimer?.invalidate()
-        outputLabel.text = "Make sure the device is ON"
+       // outputLabel.text = "Make sure the device is ON"
     }
     
-   /* var bleService: BTModuleService?
-        {
-        didSet
-        {
-            if let service = self.bleService
-            {
-                service.startDiscoveringServices()
-            }
-        }
-    }
-    */
     // MARK: - CBCentralManagerDelegate
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
@@ -161,8 +139,11 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
            // self.bleService = nil
             
 
-            central.connect(peripheral, options: nil)
+            //central.connect(peripheral, options: nil)
             outputLabel.text = "Found " + peripheral.name! + " device"
+            
+            peripherals.append(peripheral)
+            self.tableView.reloadData()
             
         }
     }
@@ -173,7 +154,7 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         if (peripheral == self.peripheral) {
             peripheral.delegate = self
             peripheral.discoverServices(nil)
-            print("Connected")
+            //print("Connected")
             isConnected = true
             
         }
@@ -188,10 +169,11 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         //if (peripheral == self.peripheralBLE) {
         //self.bleService = nil;
         peripheral.delegate = nil
+        isConnected = false
         print("Bluno Board is disconnected")
         //outputLabel.text = "Bluno Board is disconnected"
         //}
-        
+        self.peripherals = []
         // Start scanning for new devices
         self.startScanning()
     }
@@ -206,28 +188,23 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch (central.state) {
         case .poweredOff:
-           // isBluetoothEnabled = false
             NSLog("BLE PoweredOff")
             self.clearDevices()
             
         case .unauthorized:
             // Indicate to user that the iOS device does not support BLE.
             NSLog("BLE Unauthorized")
-            //isBluetoothEnabled = false
             break
             
         case .unknown:
             // Wait for another event
-            //isBluetoothEnabled = false
             break
             
         case .poweredOn:
             NSLog("BLE poweredOn")
-            //self.startScanning()
-            //isBluetoothEnabled = true
+
             
         case .resetting:
-            //isBluetoothEnabled = false
             self.clearDevices()
             
         case .unsupported:
@@ -258,7 +235,7 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
         for service in peripheral.services! {
             if service.uuid == BLEModuleServiceUUID {
                 peripheral.discoverCharacteristics(uuidsForBTService, for: service)
-                NSLog("Discovered service: %@",service);
+                //NSLog("Discovered service: %@",service);
             }
         }
     }
@@ -280,9 +257,9 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
                     peripheral.setNotifyValue(true, for: characteristic)
                     
                     // Send notification that Bluetooth is connected and all required characteristics are discovered
-                    self.sendBTServiceNotificationWithIsBluetoothConnected(true)
-                    NSLog("Discovered characteristic: %@", characteristic)
-                    print("HERE")
+                    //self.sendBTServiceNotificationWithIsBluetoothConnected(true)
+                    //NSLog("Discovered characteristic: %@", characteristic)
+                    //print("HERE")
                     
                 }
             }
@@ -296,10 +273,32 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?){
         
         //var data: String
+       // var result: Float = 0.0
         
         if characteristic.uuid == kBlunoDataCharacteristic {
             let value = String(data: characteristic.value!, encoding: String.Encoding.utf8)
             print("Value \(value)")
+            for index in 0...4{
+                strArr.append(value!)
+                
+                //print("string array")
+                //index += 1
+                
+            }
+            
+            
+        
+            
+            
+            var index = 0
+            for val in strArr{
+               print(strArr[index])
+                index+=1
+        
+            }
+            //let num = NumberFormatter().number(from: value!)?.floatValue
+           //result = (num as? Float)!
+           //print("Value \(num)")
             
         }
         
@@ -309,22 +308,26 @@ class BTModuleViewController: UIViewController,  UITableViewDataSource, UITableV
     
     // Mark: - Private
     
-    func readData(_ characteristic: CBCharacteristic, error: Error?)
-    {
+    func storeStringData(_ data: String) ->[String]{
+        var strArr = [String]()
         
-        /******** (1) CODE TO BE ADDED *******
-         let data = characteristic.value!;
-         // Display the heart rate value to the UI if no error occurred
-         if((characteristic.value != nil) || !(error != nil) ) {   // 4
-         
-         NSLog("VALUE RECEIVED IS %@", data)
-         }
-         */
+        if (data != "\r\n"){
+            strArr.append(data)
+            
+            //print("string array is  \(strArr[index])")
+            //index += 1
+            
+        }
+        
+        return strArr
     }
     
-    func sendBTServiceNotificationWithIsBluetoothConnected(_ isBluetoothConnected: Bool) {
-        let connectionDetails = ["isConnected": isBluetoothConnected]
-        NotificationCenter.default.post(name: Notification.Name(rawValue: BLEServiceChangedStatusNotification), object: self, userInfo: connectionDetails)
+    func convertToFloat(){
+        
+    }
+  
+    func isNumeric(a: String) -> Bool {
+        return Float(a) != nil
     }
     
     @IBAction func ScanButton(_ sender: UIButton) {
